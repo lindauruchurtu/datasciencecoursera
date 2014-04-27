@@ -8,6 +8,8 @@ Dated 26/05/2014
 Feature Description
 -------------------
 
+The ``run_analysis.R`` script generates two separate .``csv`` files whose features are described below:
+
 ### merged_sets.csv
 
 The features in this set were obtained from the original features of the train and test sets of the [UCI HAR Dataset](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip).
@@ -30,11 +32,14 @@ For each record it is provided:
 
 ### Avg_by_user_by_activity.csv
 
-This file contains and independent tidy data set with the average of each variable for each activity and each subject. For each record, it is provided:
+This file contains an independent tidy data set with the average of each variable for each activity and each subject. For each record, it is provided:
 
 * userID: An identifier of the subject who carried out the experiment.
 * activity: The activity label, one of "walking", "walking_upstairs", "walking_downstairs", "sitting", "standing", "laying".
 * Average measurements per subject per activity, on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66). Feature names are constructed by appending "Avg" to the feature name in the set described above (see ``merged_sets.csv``). For example ``Avg_tBodyAcc_mean_X`` records the average value of ``tBodyAcc_mean_X`` for each activity for a given subject.
+
+Transformation of Source Data
+-----------------------------
 
 ### Cleaning Data
 
