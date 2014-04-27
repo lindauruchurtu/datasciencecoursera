@@ -75,7 +75,9 @@ A second tidy data set is generated from the original one by aggregating data pe
 
 ### Notes
 
-The ``run_analysis.R`` script is fully commented and supplementary information can be obtained there. 
+The ``run_analysis.R`` script is fully commented and supplementary information can be obtained there. This code book
+does not include the explanations behind the features of the original study. For more information, we refer the 
+user to the project page at the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
 
 
 
