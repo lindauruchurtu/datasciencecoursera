@@ -1,6 +1,7 @@
 CodeBook for Peer Assessment Project
 ====================================
 
+Getting and Cleaning Data - Coursera
 Version 1.0.
 Dated 26/05/2014
 
@@ -24,7 +25,7 @@ For each record it is provided:
 * activity: The activity label, one of "walking", "walking_upstairs", "walking_downstairs", "sitting", "standing", "laying".
 * Measurements on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66), incl. ``tBodyAcc_mean_XYZ``, ``tBodyAcc_std_XYZ``, ``tGravityAcc_mean_XYZ``, ``tGravityAcc_std_XYZ``, ``tBodyAccJerk_mean_XYZ``, ``tBodyAccJerk_std_XYZ``, ``tBodyGyro_mean_XYZ``, ``tBodyGyro_std_XYZ``, ``tBodyGyroJerk_mean_XYZ``, ``tBodyGyroJerk_std_XYZ``, ``tBodyAccMag_mean``, ``tBodyAccMag_std``, ``tGravityAccMag_mean``, ``tGravityAccMag_std``, ``tBodyAccJerkMag_mean``, ``tBodyAccJerkMag_std``, ``tBodyGyroMag_mean``, ``tBodyGyroMag_std``, ``tBodyGyroJerkMag_mean``, ``tBodyGyroJerkMag_std``, ``fBodyAcc_mean_XYZ``, ``fBodyAcc_std_XYZ``, ``fBodyAccJerk_mean_XYZ``, ``fBodyAccJerk_std_XYZ``, ``fBodyGyro_mean_XYZ``, ``fBodyGyro_std_XYZ``, ``fBodyAccMag_mean``, ``fBodyAccMag_std``, ``fBodyBodyAccJerkMag_mean``, ``fBodyBodyAccJerkMag_std``, ``fBodyBodyGyroMag_mean``, ``fBodyBodyGyroMag_std``, ``fBodyBodyGyroJerkMag_mean``, ``fBodyBodyGyroJerkMag_std``
 
--XYZ is used to denote 3-axial signals in the X, Y and Z directions.
+*Note:* The -XYZ string is used to denote 3-axial signals in the X, Y and Z directions.
 
 ### Avg_by_user_by_activity.csv
 
@@ -50,9 +51,21 @@ Activity labels are changed from numerical identifiers to explicit string identi
 
 The script merges the train and test sets into a single dataframe using rbind, and re-orders it by userID and activity. The output is then recorded as the ``merged_sets.csv`` file, which is stored in the working directory.
 
+| userID        | activity      | tBodyAcc_mean_X  |  (65 other features)  |
+|:-------------:|:-------------:|:----------------:|:---------------------:|
+| 1             | walking       |   0.2820216      |                       |
+| 1             | walking       |   0.2558408      |                       |
+| 1             | walking       |   0.2548672      |                       |
+
 #### Creating Averages data set
 
 A second tidy data set is generated from the original one by aggregating data per user and per activity and taking the mean. The resulting set contains 180 observations (30 subjects times 6 activities = 180 observations). The features are then re-labelled by appending the "Avg" string. The output is then recorded on the ``Avg_by_user_by_activity.csv`` file that is stored in the working directory.
+
+| userID        | activity            | Avg_tBodyAcc_mean_X  |  (65 other features)  |
+|:-------------:|:-------------------:|:--------------------:|:---------------------:|
+| 1             | walking             |   0.2773308          |                       |
+| 1             | walking_upstairs    |   0.2554617          |                       |
+| 1             | walking_downstairs  |   0.2891883          |                       |
 
 ### Notes
 
