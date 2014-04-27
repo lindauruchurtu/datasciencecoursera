@@ -5,7 +5,8 @@ Getting and Cleaning Data - Coursera
 Version 1.0.
 Dated 26/05/2014
 
-## Feature Selection 
+Feature Description
+-------------------
 
 ### merged_sets.csv
 
