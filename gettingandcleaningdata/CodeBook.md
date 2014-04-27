@@ -30,11 +30,7 @@ This file contains and independent tidy data set with the average of each variab
 
 * userID: An identifier of the subject who carried out the experiment.
 * activity: The activity label, one of "walking", "walking_upstairs", "walking_downstairs", "sitting", "standing", "laying".
-* Average measurements per subject per activity, on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66). Feature names are constructed by appending "Avg" to the feature name in the set described above (see merged_sets.csv). For example:
-
-*Avg_tBodyAcc_mean_X*
-
-records the average value of ``tBodyAcc_mean_X`` for each activity for a given subject.
+* Average measurements per subject per activity, on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66). Feature names are constructed by appending "Avg" to the feature name in the set described above (see ``merged_sets.csv``). For example ``Avg_tBodyAcc_mean_X`` records the average value of ``tBodyAcc_mean_X`` for each activity for a given subject.
 
 ### Cleaning Data
 
@@ -44,13 +40,13 @@ The ``run_analysis.R`` script was originally created on ``R Studio Version 0.98.
 
 #### Pre-processing
 
-The script starts by loading all relevant files and adding subject and activity features to the training and test sets. The subject feature is renamed "userID". The features are then renamed according to the labels contained in the ``features.txt`` file, and the total number of features is reduced to those related to mean and standard deviation of the original measurements. The names rely on underscores for clarity.
+The script starts by loading all relevant files and adding subject and activity features to the training and test sets. The subject feature is renamed ``userID``. The features are then renamed according to the labels contained in the ``features.txt`` file, and the total number of features is reduced to those related to mean and standard deviation of the original measurements. The names rely on underscores for clarity.
 
 Activity labels are changed from numerical identifiers to explicit string identifiers by treating activity as an R factor and re-mapping the levels. 
 
 #### Merging train and test sets
 
-The script merges the train and test sets into a single dataframe using rbind, and re-orders it by userID and activity. The output is then recorded as the merged_sets.csv file, which is stored in the working directory.
+The script merges the train and test sets into a single dataframe using rbind, and re-orders it by userID and activity. The output is then recorded as the ``merged_sets.csv`` file, which is stored in the working directory.
 
 #### Creating Averages data set
 
