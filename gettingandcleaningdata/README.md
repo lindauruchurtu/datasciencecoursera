@@ -9,7 +9,7 @@ in markdown format, expkaining variables, data and transformations that were per
 
 * [run_analysis.R](https://github.com/lindauruchurtu/datasciencecoursera/blob/master/gettingandcleaningdata/run_analysis.R) is a script that downloads the data from the original source, unzips it and loads it into R. It then
 cleans it and processes it to generate the required data sets.
-* CodeBook.md is a markdown file describing the variables, the data, and any transformations or work that were performed to clean up the data
+* [CodeBook.md](https://github.com/lindauruchurtu/datasciencecoursera/blob/master/gettingandcleaningdata/CodeBook.md) is a markdown file describing the variables, the data, and any transformations or work that were performed to clean up the data
 
 The original data can be found in: [Original Data Set](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
 
