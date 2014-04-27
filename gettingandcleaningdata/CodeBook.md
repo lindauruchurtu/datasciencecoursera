@@ -20,42 +20,7 @@ For each record it is provided:
 
 * userID: An identifier of the subject who carried out the experiment.
 * activity: The activity label, one of "walking", "walking_upstairs", "walking_downstairs", "sitting", "standing", "laying".
-* Measurements on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66), incl. 
-
-``tBodyAcc_mean_XYZ``
-``tBodyAcc_std_XYZ``
-tGravityAcc_mean_XYZ
-tGravityAcc_std_XYZ
-tBodyAccJerk_mean_XYZ
-tBodyAccJerk_std_XYZ         
-tBodyGyro_mean_XYZ
-tBodyGyro_std_XYZ
-tBodyGyroJerk_mean_XYZ  
-tBodyGyroJerk_std_XYZ    
-tBodyAccMag_mean
-tBodyAccMag_std
-tGravityAccMag_mean
-tGravityAccMag_std
-tBodyAccJerkMag_mean
-tBodyAccJerkMag_std
-tBodyGyroMag_mean
-tBodyGyroMag_std
-tBodyGyroJerkMag_mean
-tBodyGyroJerkMag_std
-fBodyAcc_mean_XYZ
-fBodyAcc_std_XYZ
-fBodyAccJerk_mean_XYZ
-fBodyAccJerk_std_XYZ
-fBodyGyro_mean_XYZ
-fBodyGyro_std_XYZ
-fBodyAccMag_mean
-fBodyAccMag_std
-fBodyBodyAccJerkMag_mean
-fBodyBodyAccJerkMag_std
-fBodyBodyGyroMag_mean
-fBodyBodyGyroMag_std
-fBodyBodyGyroJerkMag_mean
-fBodyBodyGyroJerkMag_std
+* Measurements on the mean and standard deviation for each type of accelerometer / gyroscope measurement (66), incl. ``tBodyAcc_mean_XYZ``, ``tBodyAcc_std_XYZ``, ``tGravityAcc_mean_XYZ``, ``tGravityAcc_std_XYZ``, ``tBodyAccJerk_mean_XYZ``, ``tBodyAccJerk_std_XYZ``, ``tBodyGyro_mean_XYZ``, ``tBodyGyro_std_XYZ``, ``tBodyGyroJerk_mean_XYZ``, ``tBodyGyroJerk_std_XYZ``, ``tBodyAccMag_mean``, ``tBodyAccMag_std``, ``tGravityAccMag_mean``, ``tGravityAccMag_std``, ``tBodyAccJerkMag_mean``, ``tBodyAccJerkMag_std``, ``tBodyGyroMag_mean``, ``tBodyGyroMag_std``, ``tBodyGyroJerkMag_mean``, ``tBodyGyroJerkMag_std``, ``fBodyAcc_mean_XYZ``, ``fBodyAcc_std_XYZ``, ``fBodyAccJerk_mean_XYZ``, ``fBodyAccJerk_std_XYZ``, ``fBodyGyro_mean_XYZ``, ``fBodyGyro_std_XYZ``, ``fBodyAccMag_mean``, ``fBodyAccMag_std``, ``fBodyBodyAccJerkMag_mean``, ``fBodyBodyAccJerkMag_std``, ``fBodyBodyGyroMag_mean``, ``fBodyBodyGyroMag_std``, ``fBodyBodyGyroJerkMag_mean``, ``fBodyBodyGyroJerkMag_std``
 
 -XYZ is used to denote 3-axial signals in the X, Y and Z directions.
 
