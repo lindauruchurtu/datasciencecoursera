@@ -3,7 +3,7 @@ README
 
 ## Getting and Cleaning Data Peer Assessment 
 
-The gettingandcleaningdata folder of the datasciencecoursera repo, contains an R script which generates
+The **gettingandcleaningdata** folder of the [datasciencecoursera repo](https://github.com/lindauruchurtu/datasciencecoursera), contains an R script which generates
 tidy datasets as established by the Getting and Cleaning Data Peer Assessment guidelines and a code book
 in markdown format, expkaining variables, data and transformations that were performed to clean up the data.
 
