@@ -1,0 +1,238 @@
+---
+title: "Assignment - Practical Machine Learning"
+output: html_document
+date: "21 March 2015"
+---
+
+Executive Summary
+====================
+We built a Random Forest model using the Weight Lifting Exercises dataset, 
+that predicts if an exercise has been performed correctly or incorrectly,
+on the basis of accelerometer readings. The model takes 52 features and 
+exhibits an OOB error of 0.51 and accuracy of 0.99 in the cross-validation set.
+This model was then used to predict the nature of the exercise for 20
+observations.
+
+Libraries & Data Preparation
+----------------------------
+We used the following R libraries:
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+library("caret")
+library("ggplot2")
+library("lubridate")
+library("corrplot")
+library("dplyr")
+library("randomForest")
+library("reshape")
+```
+We then downloaded two csv files containung training and test sets to our 
+working directory. Data was provided by [Groupware@les](http://groupware.les.inf.puc-rio.br/har).
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Read data
+url1 <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+url2 <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+download.file(url1, destfile = "training_set.csv", method="curl")
+download.file(url2, destfile = "test_set.csv", method="curl")
+
+train.dat <- read.csv(  "training_set.csv", 
+                        na.strings= c("NA",""," "), stringsAsFactors = FALSE)
+
+test.dat <- read.csv( "test_set.csv", 
+                      na.strings= c("NA",""," "), stringsAsFactors = FALSE)
+```
+We proceeded at cleaning the data. We carried out the following procedures:
+
+* Checked for character strings and replace accordingly.
+* Removed columns with NAs
+* Checked for type consistency among features in train and test sets.
+* Removed first eight identifier columns for the experiment.
+* Set class and new_window as factor columns.
+
+The outputs were stored in the `train.dat_cl` and `test.dat_cl` dataframes,
+the first an object of 19622 rows and 53 columns, and the second an object
+of 20 rows and 52 columns.
+```{r, echo=TRUE, include=FALSE, message=FALSE, cache=FALSE, warning=FALSE}
+clean_chars <- function(df, name){
+  # Function that finds "DIV/0!" characters, replaces them by Inf
+  # and turns column into numeric
+  div0 <- which( df[,name] == "#DIV/0!")
+  df[div0, name] <- Inf
+  df[, name] <- as.numeric(df[,name])
+  return(df)
+}
+
+convert.type <- function(obj,types){
+  for (i in 1:length(obj)){
+    FUN <- switch( types[[i]], 
+                   integer = as.integer, 
+                   character = as.character, 
+                   numeric = as.numeric, 
+                   factor = as.factor)
+    obj[,i] <- FUN(obj[,i])
+  }
+  obj
+}
+```
+
+```{r, echo=TRUE, include=FALSE, message=FALSE, cache=FALSE, warning=FALSE}
+train.dat$classe <- as.factor(train.dat$classe)
+
+# Check for DIV0
+faulty_cols <- which(apply(train.dat, 2, function(x) any(grepl("DIV/0", x))))
+faulty_cols <- as.list(faulty_cols)
+
+# Pass this to clean_chars, function that replaces "DIV/0" string by Inf and
+# changes column type to numeric.
+for(i in 1:length(faulty_cols)){
+  train.dat <- clean_chars(train.dat, faulty_cols[[i]])
+}
+```
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Remove columns with NAs
+train.dat_NAs <- apply(train.dat, 2, function(x) { sum( is.na(x) ) })
+train.dat_cl <- train.dat[, which( train.dat_NAs == 0 )]
+```
+
+```{r, echo=TRUE, include=FALSE, message=FALSE, cache=FALSE, warning=FALSE}
+# Make sure we have same columns in test set and of same type
+cols_train <- names(train.dat_cl)
+cols_train <- cols_train[-length(train.dat_cl)] #removes classe
+
+test.dat_cl <- test.dat[ ,cols_train]
+```
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Make col types of test and train sets match
+types <- sapply(train.dat_cl[1,],class)
+types <- as.list(types)
+
+test.dat_cl <- convert.type(test.dat_cl, types)
+```
+
+```{r, echo=TRUE, include=FALSE, message=FALSE, cache=FALSE, warning=FALSE}
+# Finally parse datetime
+train.dat_cl$cvtd_timestamp <- strptime(train.dat_cl$cvtd_timestamp, "%d/%m/%Y %H:%M")
+train.dat_cl$cvtd_timestamp <- ymd_hms(train.dat_cl$cvtd_timestamp)
+
+test.dat_cl$cvtd_timestamp <- strptime(test.dat_cl$cvtd_timestamp, "%d/%m/%Y %H:%M")
+test.dat_cl$cvtd_timestamp <- ymd_hms(test.dat_cl$cvtd_timestamp)
+
+# And new_window variable
+train.dat_cl$new_window <- as.factor(train.dat_cl$new_window)
+test.dat_cl$new_window <- as.factor(test.dat_cl$new_window)
+```
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Remove identifiers
+train.dat_cl_ids <- train.dat_cl[,1:7]
+train.dat_cl <- train.dat_cl[, 8:length(train.dat_cl)]
+```
+
+Model Building & Cross-Validation
+--------------------------------
+
+The original training set was then split into a training set and a cross validation 
+set using `caret`'s `createDataPartition` function:
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Built training set and cross-validation set
+inTrain <- createDataPartition(y = train.dat_cl$classe, p = 0.7, list = FALSE)
+
+train <- train.dat_cl[ inTrain, ]
+crossval <- train.dat_cl[ -inTrain, ]
+```
+
+To perform feature selection, we computed the correlation matrix as to check for 
+potential confounders:
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+corrMatrix <- cor( train[, -length(train)])
+```
+The output suggests we can safely include all predictors in our model. For classification,
+we chose to use the Random Forest algorithm, for its robustness when handling a large
+number of variables, great accuracy and the fact that they do not tend to overfit.
+Moreover, Random Forests are able to balance the misclassification error when data sets
+are naturally unbalanced.
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+modFit <- randomForest(classe ~ ., data = train, importance = TRUE)
+modFit
+```
+The model obtained here (500 trees) has a very small OOB error rate of 0.51%. 
+We also get additional information regarding the importance of variables in 
+the classification via the mean decrease in the Gini index 
+over the activity classes; the higher this value, the more important the associated 
+feature is. In Fig. 1 below, we show the order of importance of the features
+used in this model:
+```{r, echo=FALSE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# General Gini
+var_importance <- data.frame( variable = setdiff( colnames(train), "classe"),
+                              importance=as.vector(importance(modFit)[,7]))
+var_importance <- arrange(var_importance, desc(importance))
+
+ggplot( data = var_importance, aes(x=factor(variable, 
+                                        levels=unique(var_importance$variable) ), 
+                                        weight=importance, fill="orange4")) + 
+  geom_bar() + 
+  ggtitle("Variable Importance from Random Forest") + 
+  xlab("") + 
+  ylab("Variable Importance (Mean Decrease in Gini Index)") + 
+  scale_fill_discrete(name="Variable Name") + 
+  theme_minimal() +
+  coord_flip()+ theme(legend.position="none")
+```
+so `roll_belt` and `yaw_belt` were deemed most important when building the model.
+
+We then proceeded to cross-validate.
+
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Cross Validation with cv set
+predictCV <- predict(modFit, crossval)
+confusionMatrix(crossval$classe, predictCV)
+```
+
+The accuracy of the resulting model was of 0.9924. We can also look at the 
+margin, which is defined as the average (over all trees) of the votes for the 
+right class minus the maximum of the average over the votes for the other classes,
+so higher margins imply better confidence in the prediction per class. Fig. 2, 
+plots the margin per class via a violin plot:
+
+```{r, echo=FALSE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Plot margin
+v1 <- as.data.frame( unclass(margin(modFit,observed)))
+names(v1)[1]<- "margin"
+v1$tr <- train$classe
+
+ggplot(data = v1, aes(x=factor(tr), y=margin, fill=factor(tr))) + geom_violin() + 
+  geom_point(position = "jitter", alpha = 0.25, aes(color = tr)) + theme_minimal() +
+  xlab("Activity") + ylab("Margin")+ theme(legend.position="none")
+```
+
+So predicting the exercise to be of class A (correct way of exercise) can be done
+with the outmost confidence.
+
+Prediction
+----------
+
+We finally apply our model to the test set of 20 observations:
+```{r, echo=TRUE, include=TRUE, message=FALSE, cache=FALSE, warning=FALSE}
+# Now apply model to test set
+# Remove identifiers
+test.dat_cl_ids <- test.dat_cl[,1:7]
+test.dat_cl <- test.dat_cl[, 8:length(test.dat_cl)]
+
+# predict the classes of the test set
+predictTest <- predict(modFit, test.dat_cl)
+predictTest
+```
+
+Conclusions
+-----------
+
+The rise of devices such as Jawbone Up, Nike FuelBand, and Fitbit have made possible
+to collect data about personal activity in a fast and inexpensive way. This has
+made an impact in human activity recognition research. In particular, with the right
+data it is possible to differentiate between "well-performed"" activities vs 
+"bad-performed" ones and build models to classify outputs, which can provide
+useful information to fields such as high-performance sports training, etc.
