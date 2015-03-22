@@ -4,12 +4,15 @@ output: html_document
 date: "21 March 2015"
 ---
 
+Report - Practical Machine Learning
+===================================
+
 Executive Summary
-====================
+-----------------
 We built a Random Forest model using the Weight Lifting Exercises dataset, 
 that predicts if an exercise has been performed correctly or incorrectly,
 on the basis of accelerometer readings. The model takes 52 features and 
-exhibits an OOB error of 0.51 and accuracy of 0.99 in the cross-validation set.
+exhibits an OOB error of around half percent and accuracy of 0.99 in the cross-validation set.
 This model was then used to predict the nature of the exercise for 20
 observations.
 
@@ -41,7 +44,7 @@ train.dat <- read.csv(  "training_set.csv",
 test.dat <- read.csv( "test_set.csv", 
                       na.strings= c("NA",""," "), stringsAsFactors = FALSE)
 ```
-We proceeded at cleaning the data. We carried out the following procedures:
+We proceeded to clean the data. We carried out the following procedures:
 
 * Checked for character strings and replace accordingly.
 * Removed columns with NAs
@@ -159,7 +162,7 @@ are naturally unbalanced.
 modFit <- randomForest(classe ~ ., data = train, importance = TRUE)
 modFit
 ```
-The model obtained here (500 trees) has a very small OOB error rate of 0.51%. 
+The model obtained here (500 trees) has a very small OOB error rate of around half percent. 
 We also get additional information regarding the importance of variables in 
 the classification via the mean decrease in the Gini index 
 over the activity classes; the higher this value, the more important the associated 
@@ -192,7 +195,7 @@ predictCV <- predict(modFit, crossval)
 confusionMatrix(crossval$classe, predictCV)
 ```
 
-The accuracy of the resulting model was of 0.9924. We can also look at the 
+The accuracy of the resulting model was of 0.99. We can also look at the 
 margin, which is defined as the average (over all trees) of the votes for the 
 right class minus the maximum of the average over the votes for the other classes,
 so higher margins imply better confidence in the prediction per class. Fig. 2, 
